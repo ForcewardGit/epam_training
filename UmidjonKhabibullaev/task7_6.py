@@ -1,13 +1,31 @@
-from task5 import is_even
+from task7_5 import is_even
 
 
 class Solution:
-    prime_numbers = [1, 2, 3]   # a list of prime numbers that are identified by a class instances so far
-    max_number = 3              # a number indicating a maximum number until which `prime_numbers` are taken
-
-    def __init__(self, number: int):
-        self.number = number # a number until which we need to get the prime numbers
+    prime_numbers = []   # a list of prime numbers that are identified by a class instances so far
+    max_number = 1       # a number indicating a maximum number until which `prime_numbers` are taken
     
+    
+    def __init__(self, number = None) -> None:
+        self.number = number
+
+
+    def get_input(self):
+        try:
+            given_input = input("Enter an even number to see Goldbach's conjecture of it, or 'q' to quit: ")
+            if given_input == 'q':
+                return given_input
+
+            if given_input.isdigit():
+                if not is_even(int(given_input)):
+                    return False
+                self.number = int(given_input)
+                return given_input
+
+            return False
+        except:
+            return False
+
 
     def find_closest_less_prime(self, number: int) -> bool:
         """ Binary search implementation for prime numbers' list. 
@@ -38,7 +56,10 @@ class Solution:
         """ Function which takes an integer as its only argument and 
             returns a boolean representing whether this `number` is prime.
         """
-        if number > 0 and number < 4:
+        if number <= 1:
+            return False
+
+        elif number > 1 and number < 4:
             return True
 
         for i in range(2, number):
@@ -77,23 +98,30 @@ class Solution:
             returns the two prime numbers which, when summing, give the provided `number`.
         """
 
-        if is_even(self.number):
-            primes = self.find_primes()
-            left = 0
-            right = len(primes) - 1
+        primes = self.find_primes()
+        left = 0
+        right = len(primes) - 1
 
-            while True:
-                if primes[left] + primes[right] < self.number:
-                    left += 1
-                elif primes[left] + primes[right] > self.number:
-                    right -= 1
-                else:
-                    return primes[left], primes[right]
-        
-        return None   
-        
+        while True:
+            if primes[left] + primes[right] < self.number:
+                left += 1
+            elif primes[left] + primes[right] > self.number:
+                right -= 1
+            else:
+                return primes[left], primes[right]
+
+
 
 if __name__ == "__main__":
-    s = Solution(199452)
-    print(s.goldbach_conjecture())
+    s = Solution()
 
+    while True:
+        command = s.get_input()
+        if command == "q":
+            print("Quitting...")
+            break
+        elif command is False:
+            print("Invalid input")
+            continue
+
+        print(f"The Goldbach's conjecture for {command} is {s.goldbach_conjecture()}")
